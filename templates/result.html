@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>比較結果</title>
+    <link rel="stylesheet" href="../static/style1.css">
+</head>
+<body>
+    <h1>比較結果</h1>
+    <p>Cos類似度の平均: {{ endScore }}</p>
+
+    <h2>取得した動画1（自分の動画）のすべてのフレーム</h2>
+    <div class="frame-container">
+        {% for frame in frames1 %}
+            <img src="data:image/jpeg;base64,{{ frame|b64encode }}" style="margin: 10px; width: 200px;">
+        {% endfor %}
+    </div>
+
+    <h2>Cos類似度が低いフレーム</h2>
+    <div class="frame-container">
+        {% for index in low_similarity_indices %}
+            <img src="data:image/jpeg;base64,{{ frames1[index]|b64encode }}" style="margin: 10px; width: 200px;">
+        {% endfor %}
+    </div>
+
+    <a href="/">他の動画も比較してみる</a>
+</body>
+</html>
