@@ -12,26 +12,36 @@
             <div class="title-box">
                 <h1>Golf Swing</h1>
             </div>
-            <p>自分とプロのスイングを比較してみよう！</p>
-            <h2>始めるには…</h2>
-            <p>まずは、ゴルフスイングの動画をアップロードしてください。アプリは瞬時にスイングを分析し、改善のためのパーソナライズされたフィードバックを提供します。</p>
+            <p class="pro1">自分とプロのスイングを比較してみよう！</p>
+            <br>
+            <p class="pro2">まずは、ゴルフスイングの動画をアップロードしてください</p>
+            <p class="pro2">アプリは瞬時にスイングを分析し、改善のためのパーソナライズされたフィードバックを提供します</p>
             <div class="upload-container">
                 <h2 class="upload-title">比較したい動画をアップロードしてください</h2>
                 <div class="upload-form">
                     <form action="/upload" method="post" enctype="multipart/form-data" class="upload-form">
                         <label for="upload_file1" class="upload-label">動画1（自分の動画）を選択</label>
-                        <input type="file" id="upload_file1" name="upload_file1" multiple="multiple" class="upload-input">
+                        <input type="file" id="upload_file1" name="video1" multiple="multiple" value="ファイルを選択" class="upload-input">
+                        <br> <!-- 行を分けるための改行タグ -->
                         <label for="upload_file2" class="upload-label">動画2（比較したい動画）を選択</label>
-                        <input type="file" id="upload_file2" name="upload_file2" multiple="multiple" class="upload-input">
+                        <input type="file" id="upload_file2" name="video2" multiple="multiple" value="ファイルを選択" class="upload-input">
+                        <br>
+                        <br>
                         <input type="submit" value="送信" class="upload-button">
-                    </form>
+                    </form>                                        
                 </div>
             </div>
         </div>
         <div class="description">
-            <h2>ゴルフスイングを改善しましょう！</h2>
+            <h2>ゴルフスイングの改善</h2>
+            <br>
+            <br>
             <p>Golf Swingは、あなたのゴルフスイングを分析し、プロのスイングと比較することができるアプリです。自分のスイングに潜む課題を見つけ、プロの技術を学びましょう!</p>
+            <br>
+            <br>
             <h2>特長</h2>
+            <br>
+            <br>
             <ul>
                 <li>動画をアップロードして瞬時に分析</li>
                 <li>プロとの違いを明確にして改善点の決定</li>

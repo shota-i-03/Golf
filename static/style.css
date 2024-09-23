@@ -1,15 +1,16 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #23b77c;
+    background-color: #f3f4f4;
     margin: 0;
     padding: 0;
 }
 
 .container {
-    max-width: 800px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 20px;
 }
+
 .title-box {
     text-align: center;
     background-color: #fff;
@@ -20,21 +21,22 @@ body {
 }
 
 .title-box h1 {
-    color: #333;
-    font-size: 36px;
-    margin-bottom: 10px;
-    display: inline-block;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 1rem 3rem;
+    color: #fff;
+    border-radius: 100vh;
+    background-image: -webkit-gradient(linear, right top, left top, from(#9be15d), to(#00e3ae));
+    background-image: -webkit-linear-gradient(right, #9be15d 0%, #00e3ae 100%);
+    background-image: linear-gradient(to left, #9be15d 0%, #00e3ae 100%);
 }
 
 .hero {
-    text-align: center;
-    background-color: #f3f3f7;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 30px;
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    color: #080d0e;
+    text-align:center;
+    background: #e4fcff;/*背景色*/
+    border-top: solid 6px #1dc1d6;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.32);/*影*/
 }
 
 .hero h1 {
@@ -43,10 +45,28 @@ body {
     margin-bottom: 10px;
 }
 
-.hero p {
+.pro1 {
     color: #666;
-    font-size: 18px;
+    font-size: 19px;
     margin-bottom: 20px;
+    font-weight:bold;
+}
+
+.pro1 {
+    position: relative;
+    padding: 1rem .5rem;
+}
+
+.pro1:after {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    content: '';
+    background-image: -webkit-gradient(linear, left top, right top, from(#fa709a), to(#fee140));
+    background-image: -webkit-linear-gradient(left, #fa709a 0%, #fee140 100%);
+    background-image: linear-gradient(to right, #fa709a 0%, #fee140 100%);
 }
 
 .hero a.button {
@@ -63,11 +83,37 @@ body {
     background-color: #0056b3;
 }
 
+.upload-button {
+    display: inline-block;
+    padding: 0.3em 1.5em;
+    text-decoration: none;
+    background: #7a98d8;/*ボタン色*/
+    color: #FFF;
+    border-bottom: solid 4px #627295;
+    border-radius: 3px;
+}
+
+.upload-button:active {
+    /*ボタンを押したとき*/
+    -webkit-transform: translateY(4px);
+    transform: translateY(4px);/*下に動く*/
+    border-bottom: none;/*線を消す*/
+}
+
+.upload-title{
+    color: #364e96;/*文字色*/
+    border: solid 3px #364e96;/*線色*/
+    padding: 0.5em;/*文字周りの余白*/
+    border-radius: 0.5em;/*角丸*/
+}
+
 .description {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 0.5em 1em;
+    margin: 2em 0;
+    color: #040c0c;
+    background: #e4fcff;/*背景色*/
+    border-top: solid 6px #427f87;
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.32);/*影*/
 }
 
 .description h2 {
@@ -75,36 +121,54 @@ body {
     font-size: 24px;
     margin-bottom: 10px;
 }
+.description h2 {
+    color: #364e96;/*文字色*/
+    padding: 0.5em 0;/*上下の余白*/
+    border-top: solid 3px #364e96;/*上線*/
+    border-bottom: solid 3px #364e96;/*下線*/
+}
 
 .description p {
     color: #666;
-    font-size: 16px;
+    font-size: 18px;
     line-height: 1.5;
     margin-bottom: 20px;
+    font-weight:bold
 }
 
 .description ul {
-    list-style-type: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    border: solid 2px #2dbd43;
+    padding: 0.5em 1em 0.5em 2.3em;
+    position: relative;
+    margin-top: 2em;
 }
 
 .description ul li {
-    color: #333;
-    font-size: 16px;
-    margin-bottom: 10px;
-    width: 45%; /* Adjust as needed */
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.5;
+    padding: 0.5em 0;
+    font-weight:bold;
+    list-style-type: none!important;
 }
 
-.description ul li::before {
-    content: "•";
-    margin-right: 10px;
-    color: #007bff;
+.description ul li:before {
+    /* リストのアイコン */
+    font-family: "Font Awesome 5 Free";
+    content: "\f00c";
+    position: absolute;
+    left: 1em; /* 左端からのアイコンまでの距離 */
+    color: #2dbd43; /* アイコン色 */
+}
+
+.description ul li:after {
+    /* タブ */
+    background: #2dbd43;
+    color: #fff;
+    font-family: "Font Awesome 5 Free",'Avenir','Arial',sans-serif;
+    position: absolute;
+    left: -2px;
+    bottom: 100%;
+    padding: 1px 7px;
+    content: '\f0a7  Check'; /* アイコンコード＋文字 */
+    letter-spacing: 0.05em; /* 字間 */
 }
 

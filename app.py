@@ -1,10 +1,17 @@
+# Pythonコード
+
 from flask import Flask, render_template, request
 import cv2
 import mediapipe as mp
 import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
+import base64
+import os
+import json
 
 app = Flask(__name__)
+
+# zip関数をJinja2テンプレートに渡す
+app.jinja_env.globals.update(zip=zip)
 
 # MediaPipe Poseモデルの読み込み
 mp_pose = mp.solutions.pose
@@ -14,22 +21,25 @@ poses = mp_pose.Pose(
     min_tracking_confidence=0.8
 )
 
-# 入力：比較する2つの座標ランドマーク群
-# 出力：各ベクトルごとに比較したコサイン平均類似度
-def manual_cos(A, B):
-    dot = np.sum(A*B, axis=-1)
-    A_norm = np.linalg.norm(A, axis=-1)
-    B_norm = np.linalg.norm(B, axis=-1)
-    cos = dot / (A_norm*B_norm+1e-10)
+# カスタムフィルターとしてb64encodeを定義
+@app.template_filter('b64encode')
+def b64encode_filter(s):
+    return base64.b64encode(s.encode()).decode()
 
-    # 検出できない場合の処理
-    for i in cos:
-        count = 0
-        if i == 0:
-            print("cos deleted")
-            np.delete(cos, count)
-        count += 1
-    return cos.mean()
+def manual_cos(A, B):
+    if A is None or B is None:
+        return 0.0  # もしくは適切な値に置き換えてください
+    else:
+        dot = np.sum(A*B, axis=-1)
+        norm_A = np.linalg.norm(A, axis=-1)
+        norm_B = np.linalg.norm(B, axis=-1)
+        cos_similarity = dot / (norm_A * norm_B)
+        return np.mean(cos_similarity)
+
+def encode_image(image_dir, image_name):
+    image_path = os.path.join(image_dir, image_name)
+    with open(image_path, "rb") as image_file:
+        return base64.b64encode(image_file.read()).decode("utf-8")
 
 @app.route('/')
 def index():
@@ -38,26 +48,32 @@ def index():
 @app.route('/upload', methods=['POST'])
 def compare_videos():
     # ファイルがアップロードされた場合
-    if 'swing20230506.mp4' in request.files and 'swing20230904.mp4' in request.files:
-        video1 = request.files['swing20230506.mp4']
-        video2 = request.files['swing20230904.mp4']
+    if 'video1' in request.files and 'video2' in request.files:
+        video1 = request.files['video1']
+        video2 = request.files['video2']
+        # 一時ディレクトリの作成
+        os.makedirs("uploads", exist_ok=True)
 
         # アップロードされたファイルを一時ファイルとして保存
-        video1_path = "./uploads/video1.mp4"
-        video2_path = "./uploads/video2.mp4"
+        video1_path = "uploads/video1.mp4"
+        video2_path = "uploads/video2.mp4"
         video1.save(video1_path)
         video2.save(video2_path)
+
+        # フレームを保存するディレクトリを作成
+        video1_frames_dir = "uploads/video1_frames"
+        os.makedirs(video1_frames_dir, exist_ok=True)
 
         # カメラやビデオファイルからの入力
         target_vid1 = cv2.VideoCapture(video1_path)
         target_vid2 = cv2.VideoCapture(video2_path)
 
-        # フレームを格納するリスト
-        frames1 = []
-        frames2 = []
-
         # スコア数のリスト
         totalscore = []
+
+        frame_count = 0
+
+        similarity_scores = []  # 類似度スコアを保持するリストを初期化する
 
         while True:
             success1, img1 = target_vid1.read()
@@ -86,19 +102,21 @@ def compare_videos():
             else:
                 pose_landmarks2 = None
 
-            # 骨格描写を行い、描画された画像をリストに追加
-            img1_with_pose = img1.copy()
-            img2_with_pose = img2.copy()
-            frames1.append(img1_with_pose)
-            frames2.append(img2_with_pose)
+            # フレームを保存
+            video1_frame_path = os.path.join(video1_frames_dir, f"frame_{frame_count}.jpg")
+            cv2.imwrite(video1_frame_path, img1)
+
 
             # コサイン類似度を計算
             score = manual_cos(pose_landmarks1, pose_landmarks2)
             totalscore.append(score)
             print("SCORE : " + str(score))
+            # フレーム数をインクリメント
+            frame_count += 1
 
         # スコアの平均を計算
         endScore = np.mean(totalscore)
+        endScore = round(endScore * 100, 2)
         print("AVE SCORE : " + str(endScore))
 
         # 後処理
@@ -106,17 +124,22 @@ def compare_videos():
         target_vid1.release()
         target_vid2.release()
 
-        # フレーム数の差を計算
-        frame_diff = len(frames1) - len(frames2)
+        # 画像パスのリストをBase64エンコードされたデータのリストに変換
+        encoded_images = [encode_image(video1_frames_dir, image_name) for image_name in os.listdir(video1_frames_dir)]
+
 
         # Cos類似度が低いフレームのインデックスを取得
         low_similarity_indices = np.argsort(totalscore)[:3]
 
+        # スコアをフレーム数に合わせて増やす
+        similarity_scores = [totalscore[i] for i in range(len(encoded_images))]
+        similarity_scores = [round(score * 100, 2) for score in similarity_scores]
+
         # 結果をテンプレートに渡して表示
-        return render_template('result.html', endScore=endScore, frames1=frames1, low_similarity_indices=low_similarity_indices)
+        return render_template('result.html', endScore=endScore, frames1=encoded_images, low_similarity_indices=low_similarity_indices, similarity_scores=similarity_scores)
 
     else:
-        return "Error: ファイルが提供されませんでした。"
+        return "Error"
 
 if __name__ == '__main__':
     app.run(debug=True)

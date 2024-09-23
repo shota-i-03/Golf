@@ -7,20 +7,26 @@
     <link rel="stylesheet" href="../static/style1.css">
 </head>
 <body>
-    <h1>比較結果</h1>
-    <p>Cos類似度の平均: {{ endScore }}</p>
+    <h1><span>比較結果</span></h1>
+    <p>スイング全体の類似度: {{ endScore }}%</p>
 
-    <h2>取得した動画1（自分の動画）のすべてのフレーム</h2>
+    <h2>取得した動画1（自分の動画）のすべてのスイングフレーム</h2>
     <div class="frame-container">
-        {% for frame in frames1 %}
-            <img src="data:image/jpeg;base64,{{ frame|b64encode }}" style="margin: 10px; width: 200px;">
+        {% for frame, similarity in zip(frames1, similarity_scores) %}
+            <div>
+                <img src="data:image/jpeg;base64,{{ frame }}" style="margin: 10px; width: 200px;">
+                <p>類似度: {{ similarity }}</p>
+            </div>
         {% endfor %}
-    </div>
+    </div>    
 
-    <h2>Cos類似度が低いフレーム</h2>
+    <h2>類似度が低いスイングフレーム</h2>
     <div class="frame-container">
         {% for index in low_similarity_indices %}
-            <img src="data:image/jpeg;base64,{{ frames1[index]|b64encode }}" style="margin: 10px; width: 200px;">
+            <div>
+                <img src="data:image/jpeg;base64,{{ frames1[index] }}" style="margin: 10px; width: 200px;">
+                <p>類似度: {{ similarity_scores[index] }}</p>
+            </div>
         {% endfor %}
     </div>
 
